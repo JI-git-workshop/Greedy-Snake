@@ -81,6 +81,7 @@ while True:
             body[-1].left = body[0].left + direct[0] * 10
             body[-1].top = body[0].top + direct[1] * 10
 
+            # TODO: Too ugly
             if body[-1].left >= 600:
                 body[-1].left -= 600
             elif body[-1].left < 0:
