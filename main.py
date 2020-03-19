@@ -19,7 +19,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((600, 400), 0, 32)
 
-pygame.display.set_caption("Greedy Snake Ver-0.1")
+pygame.display.set_caption("Greedy Snake Ver-1.0")
 
 # index: 0 for x-axis, 1 for y-axis
 direct = [1, 0]
