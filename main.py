@@ -7,19 +7,25 @@ def randomFood(food):
     food.left = randrange(0, 600, 10)
     food.top = randrange(0, 400, 10)
 
+def isDead(body):
+    head = body[0]
+    for i in range(1, len(body)):
+        if head.colliderect(body[i]):
+            return True
+
+    return False
 
 pygame.init()
 
 screen = pygame.display.set_mode((600, 400), 0, 32)
 
-pygame.display.set_caption("hello world")
+pygame.display.set_caption("Greedy Snake Ver-0.1")
 
 # index: 0 for x-axis, 1 for y-axis
 direct = [1, 0]
 
 body = [Rect(300, 200, 10, 10)]
 food = Rect(200, 100, 10, 10)
-# aBlock = pygame.draw.rect(screen, Color(0, 255, 0, 255), (pos[0], pos[1], 10, 10), 0)
 
 while True:
     pygame.time.delay(100)
@@ -53,6 +59,16 @@ while True:
     if len(body) == 1:
         body[0].centerx += direct[0] * 10
         body[0].centery += direct[1] * 10
+        # TODO too ugly
+        if body[0].centerx >= 600:
+            body[0].centerx -= 600
+        elif body[0].centerx < 0:
+            body[0].centerx += 600
+        if body[0].centery >= 400:
+            body[0].centery -= 400
+        elif body[0].centery < 0:
+            body[0].centery += 400
+
         if (body[0].colliderect(food)):
             body.append(Rect(body[0].left - direct[0]*10, body[0].top - direct[1]*10, 10, 10))
             randomFood(food)
@@ -64,8 +80,23 @@ while True:
         else:
             body[-1].left = body[0].left + direct[0] * 10
             body[-1].top = body[0].top + direct[1] * 10
+
+            if body[-1].left >= 600:
+                body[-1].left -= 600
+            elif body[-1].left < 0:
+                body[-1].left += 600
+            if body[-1].top >= 400:
+                body[-1].top -= 400
+            elif body[-1].top < 0:
+                body[-1].top += 400
+
+
             body.insert(0, body[-1])
             body.pop(-1)
+            if isDead(body):
+                pygame.time.delay(1000)
+                print("you lose")
+                exit()
             
     
     screen.fill((0, 0, 0))
