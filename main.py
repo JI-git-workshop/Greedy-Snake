@@ -26,48 +26,47 @@ direct = [1, 0]
 
 body = [Rect(300, 200, 10, 10)]
 food = Rect(200, 100, 10, 10)
+randomFood(food)
 
+
+inputCount = 0
 while True:
+    inputCount = 0
     pygame.time.delay(100)
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
 
         if event.type == KEYDOWN:
+            if inputCount == 1:
+                continue
             if event.key == K_LEFT:
-                if direct[0] ==0:
+                if direct[0] == 0:
                     direct[0] = -1
                     direct[1] = 0
+                    inputCount += 1
             elif event.key == K_RIGHT:
-                if direct[0] ==0:
+                if direct[0] == 0:
                     direct[0] = 1
                     direct[1] = 0
+                    inputCount += 1
             elif event.key == K_UP:
-                if direct[1] ==0:
+                if direct[1] == 0:
                     direct[1] = -1
                     direct[0] = 0
+                    inputCount += 1
             elif event.key == K_DOWN:
-                if direct[1] ==0:
+                if direct[1] == 0:
                     direct[1] = 1
                     direct[0] = 0
-        # elif event.type == KEYUP:
-        #     if event.key == K_LEFT or event.key == K_RIGHT:
-        #         direct[0] = 0
-        #     elif event.key == K_UP or event.key == K_DOWN:
-        #         direct[1] = 0
+                    inputCount += 1
 
     if len(body) == 1:
         body[0].centerx += direct[0] * 10
         body[0].centery += direct[1] * 10
-        # TODO too ugly
-        if body[0].centerx >= 600:
-            body[0].centerx -= 600
-        elif body[0].centerx < 0:
-            body[0].centerx += 600
-        if body[0].centery >= 400:
-            body[0].centery -= 400
-        elif body[0].centery < 0:
-            body[0].centery += 400
+
+        body[0].centerx %= 600
+        body[0].centery %= 400
 
         if (body[0].colliderect(food)):
             body.append(Rect(body[0].left - direct[0]*10, body[0].top - direct[1]*10, 10, 10))
@@ -81,15 +80,8 @@ while True:
             body[-1].left = body[0].left + direct[0] * 10
             body[-1].top = body[0].top + direct[1] * 10
 
-            # TODO: Too ugly
-            if body[-1].left >= 600:
-                body[-1].left -= 600
-            elif body[-1].left < 0:
-                body[-1].left += 600
-            if body[-1].top >= 400:
-                body[-1].top -= 400
-            elif body[-1].top < 0:
-                body[-1].top += 400
+            body[-1].left %= 600
+            body[-1].top %= 400
 
 
             body.insert(0, body[-1])
@@ -99,7 +91,6 @@ while True:
                 print("you lose")
                 exit()
             
-    
     screen.fill((0, 0, 0))
     for aRect in body:
         pygame.draw.rect(screen, Color(0, 255, 0, 255), aRect, 0)
