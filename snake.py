@@ -74,12 +74,44 @@ class bodyGeneral:
 
         screen.blit(temp,(self.collideBox.left, self.collideBox.top))
 
+# Only for the tail
+    def turn(self, screen, preDirect):
+        temp = self.image
+        if self.component == "tail":
+            rotation = [0, -90, 0, 90, 180]
+            temp = pygame.transform.rotate(self.image, rotation[preDirect[0] * 2 + preDirect[1] + 2])
+
+        pygame.draw.rect(screen,[0,0,0],self.collideBox,0)
+        screen.blit(temp,(self.collideBox.left, self.collideBox.top))
 
 class bodyS(bodyGeneral):
     def __init__(self, direction = [1,0]):
         bodyGeneral.__init__(self, "body", direction)
         # 0: up  1: down
         self.state = 0
+
+    def turn(self, screen, preDirect):
+        temp = pygame.image.load("connection.png")
+
+        if preDirect[0] == 1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == -1:
+            temp = pygame.transform.rotate(temp, 180)
+        elif preDirect[0] == 0 and preDirect[1] == 1 and self.direction[0] == -1 and self.direction[1] == 0:
+            temp = pygame.transform.rotate(temp, 180)
+        if preDirect[0] == -1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == -1:
+            temp = pygame.transform.rotate(temp, 90)
+        elif preDirect[0] == 0 and preDirect[1] == 1 and self.direction[0] == 1 and self.direction[1] == 0:
+            temp = pygame.transform.rotate(temp, 90)
+        if preDirect[0] == -1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == 1:
+            temp = pygame.transform.rotate(temp, 0)
+        elif preDirect[0] == 0 and preDirect[1] == -1 and self.direction[0] == 1 and self.direction[1] == 0:
+            temp = pygame.transform.rotate(temp, 0)
+        if preDirect[0] == 1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == 1:
+            temp = pygame.transform.rotate(temp, -90)
+        elif preDirect[0] == 0 and preDirect[1] == -1 and self.direction[0] == -1 and self.direction[1] == 0:
+            temp = pygame.transform.rotate(temp, -90)
+
+        pygame.draw.rect(screen,[0,0,0],self.collideBox,0)
+        screen.blit(temp,(self.collideBox.left, self.collideBox.top))
 
 class snake:
     def __init__(self):
@@ -98,6 +130,12 @@ class snake:
     def show(self, screen):
         for i in self.body:
             i.show(screen)
+
+        preDirect = self.body[0].direction[:]
+        for i in range(1, len(self.body)):
+            if preDirect[0] != self.body[i].direction[0] or preDirect[1] != self.body[i].direction[1]:
+                self.body[i].turn(screen, preDirect)
+                preDirect = self.body[i].direction[:]
 
     def append(self):
         tail = self.body[-1]
@@ -127,81 +165,81 @@ class snake:
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
 
-    pygame.init()
-    pygame.display.set_icon(pygame.image.load("Title-Image.png"))
+#     pygame.init()
+#     pygame.display.set_icon(pygame.image.load("Title-Image.png"))
 
-    screen = pygame.display.set_mode((pixelX, pixelY), 0, 32)
+#     screen = pygame.display.set_mode((pixelX, pixelY), 0, 32)
 
-    pygame.display.set_caption("Greedy Snake Ver-1.0")
+#     pygame.display.set_caption("Greedy Snake Ver-1.0")
 
-    # index: 0 for x-axis, 1 for y-axis
-    direct = [1, 0]
+#     # index: 0 for x-axis, 1 for y-axis
+#     direct = [1, 0]
 
-    body = snake()
-
-
-    inputCount = 0
-    while True:
-        inputCount = 0
-        pygame.time.delay(250)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                exit()
-
-            if event.type == KEYDOWN:
-                if inputCount == 1:
-                    continue
-                if event.key == K_LEFT:
-                    if direct[0] == 0:
-                        direct[0] = -1
-                        direct[1] = 0
-                        inputCount += 1
-                elif event.key == K_RIGHT:
-                    if direct[0] == 0:
-                        direct[0] = 1
-                        direct[1] = 0
-                        inputCount += 1
-                elif event.key == K_UP:
-                    if direct[1] == 0:
-                        direct[1] = -1
-                        direct[0] = 0
-                        inputCount += 1
-                elif event.key == K_DOWN:
-                    if direct[1] == 0:
-                        direct[1] = 1
-                        direct[0] = 0
-                        inputCount += 1
-                elif event.key == K_m:
-                    body.append()
-
-        # if len(body) == 1:
-        #     body[0].left += direct[0] * length
-        #     body[0].top += direct[1] * length
-
-        #     body[0].left %= pixelX
-        #     body[0].top %= pixelY
-
-        # else:
-            # body[-1].left = body[0].left + direct[0] * length
-            # body[-1].top = body[0].top + direct[1] * length
-
-            # body[-1].left %= pixelX
-            # body[-1].top %= pixelY
+#     body = snake()
 
 
-            # body.insert(0, body[-1])
-            # body.pop(-1)
-        body.move(direct)
+#     inputCount = 0
+#     while True:
+#         inputCount = 0
+#         pygame.time.delay(250)
+#         for event in pygame.event.get():
+#             if event.type == QUIT:
+#                 exit()
+
+#             if event.type == KEYDOWN:
+#                 if inputCount == 1:
+#                     continue
+#                 if event.key == K_LEFT:
+#                     if direct[0] == 0:
+#                         direct[0] = -1
+#                         direct[1] = 0
+#                         inputCount += 1
+#                 elif event.key == K_RIGHT:
+#                     if direct[0] == 0:
+#                         direct[0] = 1
+#                         direct[1] = 0
+#                         inputCount += 1
+#                 elif event.key == K_UP:
+#                     if direct[1] == 0:
+#                         direct[1] = -1
+#                         direct[0] = 0
+#                         inputCount += 1
+#                 elif event.key == K_DOWN:
+#                     if direct[1] == 0:
+#                         direct[1] = 1
+#                         direct[0] = 0
+#                         inputCount += 1
+#                 # elif event.key == K_m:
+#                 #     body.append()
+
+#         # if len(body) == 1:
+#         #     body[0].left += direct[0] * length
+#         #     body[0].top += direct[1] * length
+
+#         #     body[0].left %= pixelX
+#         #     body[0].top %= pixelY
+
+#         # else:
+#             # body[-1].left = body[0].left + direct[0] * length
+#             # body[-1].top = body[0].top + direct[1] * length
+
+#             # body[-1].left %= pixelX
+#             # body[-1].top %= pixelY
+
+
+#             # body.insert(0, body[-1])
+#             # body.pop(-1)
+#         body.move(direct)
                 
-        screen.fill((0, 0, 0))
+#         screen.fill((0, 0, 0))
 
 
-        body.show(screen)
-        # for aRect in body:
-        #     pygame.draw.rect(screen, Color(0, 255, 0, 255), aRect, 0)
+#         body.show(screen)
+#         # for aRect in body:
+#         #     pygame.draw.rect(screen, Color(0, 255, 0, 255), aRect, 0)
 
-        pygame.display.update()
+#         pygame.display.update()
 

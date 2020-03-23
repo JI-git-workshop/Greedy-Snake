@@ -10,10 +10,6 @@ length = 15
 
 
 
-
-
-
-
 pygame.init()
 
 screen = pygame.display.set_mode((pixelX, pixelY), 0, 32)
