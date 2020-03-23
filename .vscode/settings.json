@@ -1,8 +1,10 @@
 {
     "cSpell.words": [
         "KEYUP",
+        "blit",
         "centerx",
         "centery",
         "pygame"
-    ]
+    ],
+    "editor.suggestSelection": "first",
 }
