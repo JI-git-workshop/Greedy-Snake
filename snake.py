@@ -3,6 +3,35 @@ from pygame.locals import *
 from sys import exit
 from random import randrange
 
+
+pixelX = 900
+pixelY = 600
+length = 15
+
+def randomFood(aRect):
+    aRect.left = randrange(0, pixelX, length)
+    aRect.top = randrange(0, pixelY, length)
+    return aRect
+
+class foodClass:
+    state = [-1, 0, 0, 1, 1, 1, 1, 0, 0, -1]
+    def __init__(self):
+        self.image = pygame.image.load("Strawberry-15x15.png")
+        self.collideBox = randomFood(Rect(200, 100, length, length))
+        self.time = 2
+    
+    def collidepoint(self, x, y):
+        if self.collideBox.collidepoint(x, y):
+            randomFood(self.collideBox)
+            return True
+        return False
+
+    def show(self, screen):
+        self.time += 1
+        self.time %= 10
+        screen.blit(self.image,(self.collideBox.left, self.collideBox.top + self.state[self.time]))
+
+
 class bodyGeneral:
     def __init__(self, component = None, direction = [1, 0]):
         self.component = component
@@ -19,6 +48,10 @@ class bodyGeneral:
         self.direction = direction[:]
         self.collideBox.left += direction[0] * 15
         self.collideBox.top += direction[1] * 15
+
+        self.collideBox.left %= pixelX
+        self.collideBox.top %= pixelY
+
         return originalDirection
 
         
@@ -78,13 +111,24 @@ class snake:
         tail.collideBox.left -= tail.direction[0] * 15
         tail.collideBox.top -= tail.direction[1] * 15
 
+    def collide(self, food):
+        for i in self.body:
+            if food.collidepoint(i.collideBox.left, i.collideBox.top):
+                return True
+        return False
+
+    def isDead(self):
+        head = self.body[0]
+        for i in range(1, len(self.body)):
+            if head.collideBox.colliderect(self.body[i].collideBox):
+                return True
+        return False
+
 
 
 
 if __name__ == "__main__":
-    pixelX = 900
-    pixelY = 600
-    length = 15
+
 
     pygame.init()
     pygame.display.set_icon(pygame.image.load("Title-Image.png"))
@@ -153,6 +197,7 @@ if __name__ == "__main__":
         body.move(direct)
                 
         screen.fill((0, 0, 0))
+
 
         body.show(screen)
         # for aRect in body:
