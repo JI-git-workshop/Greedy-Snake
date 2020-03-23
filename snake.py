@@ -93,22 +93,10 @@ class bodyS(bodyGeneral):
     def turn(self, screen, preDirect):
         temp = pygame.image.load("connection.png")
 
-        if preDirect[0] == 1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == -1:
-            temp = pygame.transform.rotate(temp, 180)
-        elif preDirect[0] == 0 and preDirect[1] == 1 and self.direction[0] == -1 and self.direction[1] == 0:
-            temp = pygame.transform.rotate(temp, 180)
-        if preDirect[0] == -1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == -1:
-            temp = pygame.transform.rotate(temp, 90)
-        elif preDirect[0] == 0 and preDirect[1] == 1 and self.direction[0] == 1 and self.direction[1] == 0:
-            temp = pygame.transform.rotate(temp, 90)
-        if preDirect[0] == -1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == 1:
-            temp = pygame.transform.rotate(temp, 0)
-        elif preDirect[0] == 0 and preDirect[1] == -1 and self.direction[0] == 1 and self.direction[1] == 0:
-            temp = pygame.transform.rotate(temp, 0)
-        if preDirect[0] == 1 and preDirect[1] == 0 and self.direction[0] == 0 and self.direction[1] == 1:
-            temp = pygame.transform.rotate(temp, -90)
-        elif preDirect[0] == 0 and preDirect[1] == -1 and self.direction[0] == -1 and self.direction[1] == 0:
-            temp = pygame.transform.rotate(temp, -90)
+        # only god and I understand what I was doing
+        angle = {26: 180, 6: 180, -28: 90, 12: 90, -26: 0, -6: 0, 28: -90, -12: -90}
+
+        temp = pygame.transform.rotate(temp, angle[sum([preDirect[a] * (3**(1-a)) for a in range(2)]) * 9 + sum([self.direction[b] * (3**(1-b)) for b in range(2)])])
 
         pygame.draw.rect(screen,[0,0,0],self.collideBox,0)
         screen.blit(temp,(self.collideBox.left, self.collideBox.top))
@@ -124,7 +112,8 @@ class snake:
     def move(self, direction):
         for i in self.body:
             direction = i.move(direction)[:]
-            # TODO When turning the direction is special
+            # Done When turning the direction is special
+            # * Doing this in the turn() function
             # self.body[1].move(direction1)
 
     def show(self, screen):
